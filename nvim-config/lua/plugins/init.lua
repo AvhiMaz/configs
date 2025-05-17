@@ -1,7 +1,16 @@
 return {
   {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
+  {
     "stevearc/conform.nvim",
-    event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -13,32 +22,32 @@ return {
     end,
   },
   {
-    'mrcjkb/rustaceanvim',
-    version = '^6', -- Recommended
+    "mrcjkb/rustaceanvim",
+    version = "^6", -- Recommended
     lazy = false, -- This plugin is already lazy
   },
   {
-    'rust-lang/rust.vim',
+    "rust-lang/rust.vim",
     ft = "rust",
-    init = function ()
+    init = function()
       vim.g.rustfmt_autosave = 1
-    end
+    end,
   },
   {
-    'saecki/crates.nvim',
-    ft = {"toml"},
+    "saecki/crates.nvim",
+    ft = { "toml" },
     config = function()
       require("crates").setup {
         completion = {
           cmp = {
-            enabled = true
+            enabled = true,
           },
         },
       }
-      require('cmp').setup.buffer({
-        sources = { { name = "crates" }}
-      })
-    end
+      require("cmp").setup.buffer {
+        sources = { { name = "crates" } },
+      }
+    end,
   },
   {
     "nvimtools/none-ls.nvim",
@@ -48,21 +57,28 @@ return {
   },
   {
     "windwp/nvim-ts-autotag",
-    ft = {"javascript", "javascriptreact", "typescript", "typescriptreact"},
+    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
     config = function()
       require("nvim-ts-autotag").setup()
     end,
   },
 
-   {
+  {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-    ensure_installed = {
-   		"vim", "lua", "vimdoc",
-      "html", "css", "javascript", "typescript", "tsx", "rust", "o"
-   		},
-   	},
+      ensure_installed = {
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "tsx",
+        "rust",
+        "o",
+      },
+    },
     highlight = { enable = true },
-   },
-
+  },
 }
