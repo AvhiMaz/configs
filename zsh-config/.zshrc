@@ -36,6 +36,7 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
+
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
 
@@ -191,7 +192,7 @@ td() {
   fi
 
   # Otherwise, create new session with windows
-  tmux -u new-session -d -s "$SESSION" -n dev 'zsh -c "nvim; exec zsh"'
+  tmux -u new-session -d -s "$SESSION" -n dev 
 
   tmux -u new-window -t "$SESSION:2" -n build-or-server
   tmux -u new-window -t "$SESSION:3" -n git
