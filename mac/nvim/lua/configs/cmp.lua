@@ -1,6 +1,8 @@
 local cmp = require "cmp"
 local luasnip = require "luasnip"
 
+require "configs.cmp-zsh-history"
+
 local kind_icons = {
   Text = "󰉿",
   Method = "󰆧",
@@ -84,16 +86,16 @@ local cmp_config = {
   },
 }
 
--- Actually setup cmp with the configuration
 cmp.setup(cmp_config)
 
--- Setup for command mode
 cmp.setup.cmdline(":", {
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
     { name = "path" },
   }, {
     { name = "cmdline" },
+    { name = "cmdline_history" },
+    { name = "zsh_history" },
   }),
 })
 

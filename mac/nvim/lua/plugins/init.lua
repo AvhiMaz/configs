@@ -11,15 +11,14 @@ return {
     cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
     opts = {
       ensure_installed = {
-        -- LSP servers
-        "rust-analyzer",
         "typescript-language-server",
         "tailwindcss-language-server",
         "eslint-lsp",
         "html-lsp",
         "css-lsp",
         "json-lsp",
-        -- Formatters
+        "gopls",
+        "clangd",
         "prettier",
         "stylua",
       },
@@ -62,11 +61,13 @@ return {
   -- nvim-cmp: Completion plugin
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+    event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "dmitmel/cmp-cmdline-history",
       "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip",
     },

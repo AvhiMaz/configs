@@ -31,7 +31,12 @@ local on_lsp_attach = function(client, bufnr)
   map("n", "<leader>d", vim.diagnostic.open_float, opts)
   map("n", "[d", vim.diagnostic.goto_prev, opts)
   map("n", "]d", vim.diagnostic.goto_next, opts)
-  map("n", "<leader>q", vim.diagnostic.setloclist, opts)
+  -- Quickfix list with all diagnostics
+  map("n", "<leader>q", function()
+    vim.diagnostic.setqflist({ open = true })
+  end, opts)
+  -- Telescope diagnostics (nicer UI)
+  map("n", "<leader>dd", "<cmd>Telescope diagnostics<cr>", opts)
 
   -- Format
   if client.server_capabilities.documentFormattingProvider then
