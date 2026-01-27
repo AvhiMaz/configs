@@ -1,70 +1,87 @@
 return {
   {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
-  },
-  {
     "stevearc/conform.nvim",
-    event = "BufWritePre", -- uncomment for format on save
+    event = 'BufWritePre',
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
+  -- Mason: Package manager for LSP servers, formatters, debuggers
+  {
+    "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+    opts = {
+      ensure_installed = {
+        "typescript-language-server",
+        "tailwindcss-language-server",
+        "eslint-lsp",
+        "html-lsp",
+        "css-lsp",
+        "json-lsp",
+        "gopls",
+        "clangd",
+        "prettier",
+        "stylua",
+      },
+    },
+  },
+
+  -- Mason LSP Config: Bridges mason and lspconfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = "mason.nvim",
+    cmd = { "LspInstall", "LspUninstall" },
+    config = function()
+      require "configs.mason-lspconfig"
+    end,
+  },
+
+  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "mason.nvim",
+      "mason-lspconfig.nvim",
+    },
     config = function()
       require "configs.lspconfig"
     end,
   },
+
+  -- Rustaceanvim: Enhanced Rust support
   {
     "mrcjkb/rustaceanvim",
-    version = "^6", -- Recommended
-    lazy = false, -- This plugin is already lazy
-  },
-  {
-    "rust-lang/rust.vim",
-    ft = "rust",
-    init = function()
-      vim.g.rustfmt_autosave = 1
-    end,
-  },
-  {
-    "saecki/crates.nvim",
-    ft = { "toml" },
+    version = "^4",
+    ft = { "rust" },
+    dependencies = "neovim/nvim-lspconfig",
     config = function()
-      require("crates").setup {
-        completion = {
-          cmp = {
-            enabled = true,
-          },
-        },
-      }
-      require("cmp").setup.buffer {
-        sources = { { name = "crates" } },
-      }
-    end,
-  },
-  {
-    "nvimtools/none-ls.nvim",
-    opts = function()
-      return require "configs.null-ls"
-    end,
-  },
-  {
-    "windwp/nvim-ts-autotag",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-    config = function()
-      require("nvim-ts-autotag").setup()
+      require "configs.rustaceanvim"
     end,
   },
 
+  -- nvim-cmp: Completion plugin
+  {
+    "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdlineEnter" },
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "dmitmel/cmp-cmdline-history",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+    },
+    config = function()
+      require "configs.cmp"
+    end,
+  },
+
+  -- Treesitter for better syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = ":TSUpdate",
     opts = {
       ensure_installed = {
         "vim",
@@ -72,13 +89,31 @@ return {
         "vimdoc",
         "html",
         "css",
+        "rust",
+        "toml",
+        "json",
         "javascript",
         "typescript",
         "tsx",
-        "rust",
-        "o",
+        "markdown",
+        "markdown_inline",
+      },
+      highlight = {
+        enable = true,
       },
     },
-    highlight = { enable = true },
+  },
+
+  -- Fugitive: Git wrapper
+  {
+    "tpope/vim-fugitive",
+    cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse" },
+    keys = {
+      { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
+      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
+      { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
+      { "<leader>gl", "<cmd>Git pull<cr>", desc = "Git pull" },
+      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git diff" },
+    },
   },
 }
