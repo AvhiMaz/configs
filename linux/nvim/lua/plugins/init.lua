@@ -8,40 +8,17 @@ return {
   -- Mason: Package manager for LSP servers, formatters, debuggers
   {
     "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "typescript-language-server",
-        "tailwindcss-language-server",
-        "eslint-lsp",
-        "html-lsp",
-        "css-lsp",
-        "json-lsp",
-        "gopls",
-        "clangd",
-        "prettier",
-        "stylua",
-      },
-    },
-  },
-
-  -- Mason LSP Config: Bridges mason and lspconfig
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = "mason.nvim",
+    lazy = false,
     config = function()
-      require("mason-lspconfig").setup {
-        automatic_installation = true,
-      }
+      require("mason").setup()
     end,
   },
 
-  -- LSP Configuration
+  -- LSP Configuration (without mason-lspconfig to avoid the bug)
   {
     "neovim/nvim-lspconfig",
-    dependencies = {
-      "mason.nvim",
-      "mason-lspconfig.nvim",
-    },
+    lazy = false,
+    dependencies = { "mason.nvim" },
     config = function()
       require "configs.lspconfig"
     end,
@@ -52,7 +29,6 @@ return {
     "mrcjkb/rustaceanvim",
     version = "^4",
     ft = { "rust" },
-    dependencies = "neovim/nvim-lspconfig",
     config = function()
       require "configs.rustaceanvim"
     end,
