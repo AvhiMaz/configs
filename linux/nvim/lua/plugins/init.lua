@@ -8,7 +8,6 @@ return {
   -- Mason: Package manager for LSP servers, formatters, debuggers
   {
     "williamboman/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
     opts = {
       ensure_installed = {
         "typescript-language-server",
@@ -29,9 +28,10 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = "mason.nvim",
-    cmd = { "LspInstall", "LspUninstall" },
     config = function()
-      require "configs.mason-lspconfig"
+      require("mason-lspconfig").setup {
+        automatic_installation = true,
+      }
     end,
   },
 

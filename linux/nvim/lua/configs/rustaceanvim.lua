@@ -1,7 +1,12 @@
 local on_lsp_attach = require "configs.lsp-mappings"
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-return {
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if ok then
+  capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+end
+
+vim.g.rustaceanvim = {
   server = {
     on_attach = function(client, bufnr)
       on_lsp_attach(client, bufnr)
@@ -15,9 +20,5 @@ return {
         checkOnSave = true,
       },
     },
-  },
-  dap = {},
-  tools = {
-    enable_clippy = true,
   },
 }
