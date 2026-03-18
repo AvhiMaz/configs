@@ -1,9 +1,5 @@
-local on_lsp_attach = require "configs.lsp-mappings"
+local on_attach = require "configs.lsp-mappings"
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-local on_attach = function(client, bufnr)
-  on_lsp_attach(client, bufnr)
-end
 
 vim.lsp.config("html", {
   filetypes = { "html" },
@@ -104,7 +100,6 @@ vim.lsp.config("clangd", {
     "--clang-tidy",
     "--header-insertion=iwyu",
     "--completion-style=detailed",
-    "--function-arg-placeholders",
     "--fallback-style=llvm",
     "--query-driver=**",
   },

@@ -1,13 +1,41 @@
 return {
   {
+    "ellisonleao/gruvbox.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("gruvbox").setup {
+        overrides = {
+          Comment = { italic = true, fg = "#928374" },
+        },
+      }
+      vim.o.background = "dark"
+      vim.cmd.colorscheme "gruvbox"
+    end,
+  },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    lazy = false,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {
+      options = {
+        theme = "gruvbox",
+        component_separators = "|",
+        section_separators = "",
+      },
+    },
+  },
+
+  {
     "stevearc/conform.nvim",
-    event = 'BufWritePre',
+    event = "BufWritePre",
     opts = require "configs.conform",
   },
 
-  -- Mason: Package manager for LSP servers, formatters, debuggers
   {
     "williamboman/mason.nvim",
+    lazy = false,
     cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
     opts = {
       ensure_installed = {
@@ -25,7 +53,6 @@ return {
     },
   },
 
-  -- Mason LSP Config: Bridges mason and lspconfig
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = "mason.nvim",
@@ -35,7 +62,6 @@ return {
     end,
   },
 
-  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -47,18 +73,16 @@ return {
     end,
   },
 
-  -- Rustaceanvim: Enhanced Rust support
   {
     "mrcjkb/rustaceanvim",
     version = "^4",
     ft = { "rust" },
     dependencies = "neovim/nvim-lspconfig",
     config = function()
-      require "configs.rustaceanvim"
+      vim.g.rustaceanvim = require "configs.rustaceanvim"
     end,
   },
 
-  -- nvim-cmp: Completion plugin
   {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdlineEnter" },
@@ -76,7 +100,6 @@ return {
     end,
   },
 
-  -- Treesitter for better syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPost", "BufNewFile" },
@@ -84,36 +107,65 @@ return {
     build = ":TSUpdate",
     opts = {
       ensure_installed = {
-        "vim",
-        "lua",
-        "vimdoc",
-        "html",
-        "css",
-        "rust",
-        "toml",
-        "json",
-        "javascript",
-        "typescript",
-        "tsx",
-        "markdown",
-        "markdown_inline",
+        "vim", "lua", "vimdoc",
+        "html", "css",
+        "rust", "toml",
+        "json", "javascript", "typescript", "tsx",
+        "markdown", "markdown_inline",
+        "c", "cpp",
       },
-      highlight = {
-        enable = true,
-      },
+      highlight = { enable = true },
     },
   },
 
-  -- Fugitive: Git wrapper
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "Telescope",
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<cr>" },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>" },
+      { "<leader>fo", "<cmd>Telescope oldfiles<cr>" },
+    },
+  },
+
+  {
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    lazy = false,
+    keys = {
+      { "<leader>e", "<cmd>Oil<cr>" },
+    },
+    opts = {
+      default_file_explorer = true,
+      view_options = { show_hidden = true },
+    },
+  },
+
+  {
+    "ej-shafran/compile-mode.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "Compile", "Recompile" },
+    keys = {
+      { "<leader>cc", "<cmd>Compile<cr>" },
+      { "<leader>cr", "<cmd>Recompile<cr>" },
+    },
+    config = function()
+      vim.g.compile_mode = { recompile_no_fail = true }
+    end,
+  },
+
   {
     "tpope/vim-fugitive",
     cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse" },
     keys = {
-      { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
-      { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
-      { "<leader>gl", "<cmd>Git pull<cr>", desc = "Git pull" },
-      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git diff" },
+      { "<leader>gs", "<cmd>Git<cr>" },
+      { "<leader>gc", "<cmd>Git commit<cr>" },
+      { "<leader>gp", "<cmd>Git push<cr>" },
+      { "<leader>gl", "<cmd>Git pull<cr>" },
+      { "<leader>gd", "<cmd>Gdiffsplit<cr>" },
     },
   },
 }

@@ -5,7 +5,9 @@ require("mason-lspconfig").setup {
   handlers = {
     -- Default handler for servers not explicitly configured
     function(server_name)
-      require("mason-lspconfig").default_setup(server_name)
+      require("lspconfig")[server_name].setup {}
     end,
+    -- rust_analyzer is managed by rustaceanvim, not lspconfig
+    rust_analyzer = function() end,
   },
 }
