@@ -40,7 +40,10 @@ local cmp_config = {
 
   window = {
     completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered {
+      max_width = 60,
+      max_height = 15,
+    },
   },
 
   mapping = cmp.mapping.preset.insert {

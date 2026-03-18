@@ -124,6 +124,7 @@ return {
     cmd = "Telescope",
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>" },
+      { "<leader>fw", "<cmd>Telescope live_grep<cr>" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>" },
@@ -133,15 +134,22 @@ return {
 
   {
     "stevearc/oil.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "refractalize/oil-git-status.nvim",
+    },
     lazy = false,
     keys = {
       { "<leader>e", "<cmd>Oil<cr>" },
     },
-    opts = {
-      default_file_explorer = true,
-      view_options = { show_hidden = true },
-    },
+    config = function()
+      require("oil").setup {
+        default_file_explorer = true,
+        view_options = { show_hidden = true },
+        win_options = { signcolumn = "yes:2" },
+      }
+      require("oil-git-status").setup {}
+    end,
   },
 
   {
@@ -155,6 +163,12 @@ return {
     config = function()
       vim.g.compile_mode = { recompile_no_fail = true }
     end,
+  },
+
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
   },
 
   {

@@ -5,6 +5,7 @@ return {
   server = {
     on_attach = function(client, bufnr)
       on_lsp_attach(client, bufnr)
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end,
     capabilities = capabilities,
     settings = {
@@ -13,6 +14,13 @@ return {
           allFeatures = true,
         },
         checkOnSave = true,
+        inlayHints = {
+          bindingModeHints = { enable = true },
+          chainingHints = { enable = true },
+          closingBraceHints = { enable = true },
+          parameterHints = { enable = true },
+          typeHints = { enable = true },
+        },
       },
     },
   },
