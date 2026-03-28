@@ -14,6 +14,7 @@ return {
           allFeatures = true,
         },
         checkOnSave = true,
+        check = { command = "clippy" },
         inlayHints = {
           bindingModeHints = { enable = true },
           chainingHints = { enable = true },

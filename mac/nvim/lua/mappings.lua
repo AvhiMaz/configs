@@ -8,6 +8,8 @@ map("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
+map("n", "<leader>ds", vim.diagnostic.setloclist)
+
 map("n", "<Up>", "<Nop>")
 map("n", "<Down>", "<Nop>")
 map("n", "<Left>", "<Nop>")

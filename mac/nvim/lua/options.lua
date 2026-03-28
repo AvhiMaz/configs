@@ -28,5 +28,6 @@ o.timeoutlen = 500
 o.updatetime = 200
 
 o.undofile = true
+o.autoread = true
 
 o.clipboard = "unnamedplus"

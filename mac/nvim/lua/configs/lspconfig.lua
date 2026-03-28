@@ -74,6 +74,8 @@ vim.lsp.config("eslint", {
   },
 })
 
+vim.filetype.add { extension = { gowork = "gowork", gotmpl = "gotmpl" } }
+
 vim.lsp.config("gopls", {
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   on_attach = on_attach,

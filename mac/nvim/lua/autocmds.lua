@@ -7,6 +7,12 @@ vim.api.nvim_create_autocmd("FileType", {
       if not file then
         file, lnum = line:match("%-%->%s+(.+):(%d+)")
       end
+      if not file then
+        file, lnum, col = line:match("^%s*(.+):(%d+):(%d+):%s+error")
+      end
+      if not file then
+        file, lnum, col = line:match("^%s*(.+):(%d+):(%d+):%s+warning")
+      end
       if not file then return end
 
       local compile_win = vim.api.nvim_get_current_win()
@@ -38,6 +44,10 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set("n", "<C-q>", "<cmd>QuickfixErrors<cr><cmd>copen<cr>", { buffer = true, silent = true })
   end,
+})
+
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+  callback = function() vim.cmd("checktime") end,
 })
 
 vim.api.nvim_create_autocmd("TermOpen", {
