@@ -77,7 +77,7 @@ return {
 
   {
     "mrcjkb/rustaceanvim",
-    version = "^4",
+    version = "^5",
     ft = { "rust" },
     dependencies = "neovim/nvim-lspconfig",
     config = function()
@@ -159,7 +159,8 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = { "Compile", "Recompile" },
     keys = {
-      { "<leader>cc", "<cmd>Compile<cr>" },
+      { "<leader>cc", function() require("configs.compile-mode").compile() end },
+      { "<leader>ch", function() require("configs.compile-mode").history() end },
       { "<leader>cr", "<cmd>Recompile<cr>" },
     },
     config = function()
@@ -167,6 +168,7 @@ return {
         recompile_no_fail = true,
         environment = { MANPAGER = "col -b", PAGER = "col -b" },
       }
+      require("configs.compile-mode")
     end,
   },
 
