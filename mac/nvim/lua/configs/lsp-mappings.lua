@@ -20,9 +20,9 @@ local on_lsp_attach = function(client, bufnr)
   end, opts)
   map("n", "<leader>dd", "<cmd>Telescope diagnostics<cr>", opts)
 
-  if client.server_capabilities.documentFormattingProvider then
-    map("n", "<leader>f", vim.lsp.buf.format, opts)
-  end
+  map("n", "<leader>f", function()
+    require("conform").format({ bufnr = bufnr, lsp_fallback = true })
+  end, opts)
 end
 
 return on_lsp_attach

@@ -36,7 +36,6 @@ return {
   {
     "williamboman/mason.nvim",
     lazy = false,
-    cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
     opts = {
       ensure_installed = {
         "typescript-language-server",
@@ -164,11 +163,7 @@ return {
       { "<leader>cr", "<cmd>Recompile<cr>" },
     },
     config = function()
-      vim.g.compile_mode = {
-        recompile_no_fail = true,
-        environment = { MANPAGER = "col -b", PAGER = "col -b" },
-      }
-      require("configs.compile-mode")
+      require("configs.compile-mode").setup()
     end,
   },
 

@@ -61,5 +61,84 @@ function M.history()
   }):find()
 end
 
-load_history()
+local function jump_to_code()
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= "compilation" then
+      vim.api.nvim_set_current_win(w)
+      return
+    end
+  end
+end
+
+local function setup_buf(ev)
+  local MAX_LINES = 5000
+  local timer = vim.uv.new_timer()
+  timer:start(0, 300, vim.schedule_wrap(function()
+    if not vim.api.nvim_buf_is_valid(ev.buf) then
+      timer:stop()
+      timer:close()
+      return
+    end
+    local count = vim.api.nvim_buf_line_count(ev.buf)
+    if count > MAX_LINES * 2 then
+      vim.api.nvim_buf_set_lines(ev.buf, 0, count - MAX_LINES, false, {})
+    end
+  end))
+
+  vim.api.nvim_create_autocmd("BufDelete", {
+    buffer = ev.buf,
+    once = true,
+    callback = function()
+      timer:stop()
+      timer:close()
+    end,
+  })
+
+  vim.keymap.set("n", "<cr>", function()
+    local line = vim.api.nvim_get_current_line()
+    local file, lnum, col = line:match("%-%->%s+(.+):(%d+):(%d+)")
+    if not file then file, lnum = line:match("%-%->%s+(.+):(%d+)") end
+    if not file then file, lnum, col = line:match("^%s*(.+):(%d+):(%d+):%s+error") end
+    if not file then file, lnum, col = line:match("^%s*(.+):(%d+):(%d+):%s+warning") end
+    if not file then return end
+
+    local compile_win = vim.api.nvim_get_current_win()
+    local target_win = nil
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      if w ~= compile_win then
+        local buf = vim.api.nvim_win_get_buf(w)
+        if vim.bo[buf].filetype ~= "compilation" then
+          target_win = w
+          if vim.api.nvim_buf_get_name(buf):find(file, 1, true) then break end
+        end
+      end
+    end
+
+    if target_win then
+      vim.api.nvim_set_current_win(target_win)
+    else
+      vim.cmd("wincmd p")
+    end
+    vim.cmd("e " .. file)
+    if lnum then
+      vim.api.nvim_win_set_cursor(0, { tonumber(lnum), col and (tonumber(col) - 1) or 0 })
+    end
+  end, { buffer = true, silent = true })
+
+  vim.keymap.set("n", "<C-q>", "<cmd>QuickfixErrors<cr><cmd>copen<cr>", { buffer = true, silent = true })
+  vim.keymap.set("n", "<C-\\>", jump_to_code, { buffer = true, silent = true })
+end
+
+function M.setup()
+  vim.g.compile_mode = {
+    recompile_no_fail = true,
+    environment = { MANPAGER = "col -b", PAGER = "col -b" },
+  }
+  load_history()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "compilation",
+    callback = setup_buf,
+  })
+end
+
 return M
