@@ -200,6 +200,15 @@ return {
   },
 
   {
+    "kdheepak/lazygit.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile" },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>" },
+    },
+  },
+
+  {
     "tpope/vim-fugitive",
     cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse" },
     keys = {
