@@ -17,7 +17,7 @@ local function save_history(cmd)
     if v == cmd then table.remove(history, i); break end
   end
   table.insert(history, 1, cmd)
-  while #history > 50 do table.remove(history) end
+  while #history > 10000 do table.remove(history) end
   local f = io.open(history_file, "w")
   if not f then return end
   for _, v in ipairs(history) do f:write(v .. "\n") end
@@ -29,8 +29,8 @@ local function run(cmd)
   vim.api.nvim_cmd({ cmd = "Compile", args = { cmd } }, {})
 end
 
-function M.compile()
-  local last = vim.g.compile_command or ""
+function M.compile(default)
+  local last = default or vim.g.compile_command or ""
   local cmd = vim.fn.input({ prompt = "Compile: ", default = last, completion = "shellcmd" })
   if cmd == "" then return end
   run(cmd)
@@ -54,7 +54,7 @@ function M.history()
     attach_mappings = function(buf, _)
       actions.select_default:replace(function()
         actions.close(buf)
-        run(action_state.get_selected_entry()[1])
+        M.compile(action_state.get_selected_entry()[1])
       end)
       return true
     end,
