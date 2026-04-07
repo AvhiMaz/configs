@@ -10,6 +10,15 @@ map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
 map("n", "<leader>ds", vim.diagnostic.setloclist)
 
+map("n", "<C-\\>", function()
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    if vim.bo[vim.api.nvim_win_get_buf(w)].filetype == "compilation" then
+      vim.api.nvim_set_current_win(w)
+      return
+    end
+  end
+end)
+
 map("n", "<Up>", "<Nop>")
 map("n", "<Down>", "<Nop>")
 map("n", "<Left>", "<Nop>")

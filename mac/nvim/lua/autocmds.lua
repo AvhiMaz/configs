@@ -1,6 +1,27 @@
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "compilation",
-  callback = function()
+  callback = function(ev)
+    local MAX_LINES = 5000
+    local timer = vim.uv.new_timer()
+    timer:start(0, 300, vim.schedule_wrap(function()
+      if not vim.api.nvim_buf_is_valid(ev.buf) then
+        timer:stop()
+        timer:close()
+        return
+      end
+      local count = vim.api.nvim_buf_line_count(ev.buf)
+      if count > MAX_LINES * 2 then
+        vim.api.nvim_buf_set_lines(ev.buf, 0, count - MAX_LINES, false, {})
+      end
+    end))
+    vim.api.nvim_create_autocmd("BufDelete", {
+      buffer = ev.buf,
+      once = true,
+      callback = function()
+        timer:stop()
+        timer:close()
+      end,
+    })
     vim.keymap.set("n", "<cr>", function()
       local line = vim.api.nvim_get_current_line()
       local file, lnum, col = line:match("%-%->%s+(.+):(%d+):(%d+)")
@@ -43,6 +64,14 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { buffer = true, silent = true })
 
     vim.keymap.set("n", "<C-q>", "<cmd>QuickfixErrors<cr><cmd>copen<cr>", { buffer = true, silent = true })
+    vim.keymap.set("n", "<C-\\>", function()
+      for _, w in ipairs(vim.api.nvim_list_wins()) do
+        if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= "compilation" then
+          vim.api.nvim_set_current_win(w)
+          return
+        end
+      end
+    end, { buffer = true, silent = true })
   end,
 })
 
