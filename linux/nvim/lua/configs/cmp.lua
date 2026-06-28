@@ -40,7 +40,10 @@ local cmp_config = {
 
   window = {
     completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered {
+      max_width = 60,
+      max_height = 15,
+    },
   },
 
   mapping = cmp.mapping.preset.insert {
@@ -77,6 +80,10 @@ local cmp_config = {
   formatting = {
     format = function(entry, vim_item)
       vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
+      if #vim_item.abbr > 40 then
+        vim_item.abbr = vim_item.abbr:sub(1, 40) .. "…"
+      end
+      vim_item.menu = nil
       return vim_item
     end,
   },

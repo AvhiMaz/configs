@@ -53,22 +53,9 @@ return {
   },
 
   {
-    "williamboman/mason-lspconfig.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    dependencies = "mason.nvim",
-    cmd = { "LspInstall", "LspUninstall" },
-    config = function()
-      require "configs.mason-lspconfig"
-    end,
-  },
-
-  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = {
-      "mason.nvim",
-      "mason-lspconfig.nvim",
-    },
+    dependencies = { "mason.nvim" },
     config = function()
       require "configs.lspconfig"
     end,

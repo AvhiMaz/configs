@@ -14,15 +14,10 @@ local options = {
     markdown = { "prettier" },
   },
 
-  format_on_save = function(bufnr)
-    local ft = vim.bo[bufnr].filetype
-    if ft == "rust" or ft == "typescript" or ft == "typescriptreact" or ft == "javascript" or ft == "javascriptreact" then
-      return {
-        timeout_ms = 2000,
-        lsp_fallback = true,
-      }
-    end
-  end,
+  format_on_save = {
+    timeout_ms = 2000,
+    lsp_fallback = true,
+  },
 }
 
 return options

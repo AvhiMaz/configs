@@ -1,27 +1,26 @@
-local lspconfig = require "lspconfig"
-local on_lsp_attach = require "configs.lsp-mappings"
+local on_attach = require "configs.lsp-mappings"
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if ok then
-  capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-end
+vim.lsp.config("html", {
+  filetypes = { "html" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
 
-local on_attach = function(client, bufnr)
-  on_lsp_attach(client, bufnr)
-end
+vim.lsp.config("cssls", {
+  filetypes = { "css", "scss", "less" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
 
-local servers = { "html", "cssls", "jsonls", "eslint", "gopls" }
+vim.lsp.config("jsonls", {
+  filetypes = { "json", "jsonc" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
 
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
-end
-
--- TypeScript
-lspconfig.ts_ls.setup {
+vim.lsp.config("ts_ls", {
+  filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
@@ -48,10 +47,10 @@ lspconfig.ts_ls.setup {
       },
     },
   },
-}
+})
 
--- Tailwind
-lspconfig.tailwindcss.setup {
+vim.lsp.config("tailwindcss", {
+  filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact" },
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
@@ -64,10 +63,37 @@ lspconfig.tailwindcss.setup {
       },
     },
   },
-}
+})
 
--- Clangd
-lspconfig.clangd.setup {
+vim.lsp.config("eslint", {
+  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    workingDirectory = { mode = "auto" },
+  },
+})
+
+vim.filetype.add { extension = { gowork = "gowork", gotmpl = "gotmpl" } }
+
+vim.lsp.config("gopls", {
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+        shadow = true,
+      },
+      staticcheck = true,
+      gofumpt = true,
+    },
+  },
+})
+
+vim.lsp.config("clangd", {
+  filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = {
@@ -76,7 +102,9 @@ lspconfig.clangd.setup {
     "--clang-tidy",
     "--header-insertion=iwyu",
     "--completion-style=detailed",
-    "--function-arg-placeholders",
     "--fallback-style=llvm",
+    "--query-driver=**",
   },
-}
+})
+
+vim.lsp.enable { "html", "cssls", "jsonls", "ts_ls", "tailwindcss", "eslint", "gopls", "clangd" }
