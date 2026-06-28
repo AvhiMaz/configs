@@ -8,7 +8,11 @@ map("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
-map("n", "<leader>ds", vim.diagnostic.setloclist)
+map("n", "[d", function() vim.diagnostic.jump { count = -1, float = true } end, { desc = "Prev diagnostic" })
+map("n", "]d", function() vim.diagnostic.jump { count = 1, float = true } end, { desc = "Next diagnostic" })
+map("n", "<leader>df", vim.diagnostic.open_float, { desc = "Diagnostic float" })
+map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
+map("n", "<leader>dq", vim.diagnostic.setqflist, { desc = "Diagnostics to quickfix" })
 
 map("n", "<C-\\>", function()
   for _, w in ipairs(vim.api.nvim_list_wins()) do

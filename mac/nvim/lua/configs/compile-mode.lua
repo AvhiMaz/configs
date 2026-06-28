@@ -127,11 +127,31 @@ local function setup_buf(ev)
 
   vim.keymap.set("n", "<C-q>", "<cmd>QuickfixErrors<cr><cmd>copen<cr>", { buffer = true, silent = true })
   vim.keymap.set("n", "<C-\\>", jump_to_code, { buffer = true, silent = true })
+
+  -- Send a line of input to the running program's stdin (for scanf etc.)
+  vim.keymap.set("n", "i", function()
+    local job = vim.g.compile_job_id
+    if not job then
+      vim.notify("No running compilation job", vim.log.levels.WARN)
+      return
+    end
+    local ok, line = pcall(vim.fn.input, "stdin> ")
+    if not ok then return end
+    vim.fn.chansend(job, line .. "\n")
+  end, { buffer = true, silent = true, desc = "Send input to running program" })
+
+  -- Send EOF (Ctrl-D) to the running program's stdin
+  vim.keymap.set("n", "<C-d>", function()
+    local job = vim.g.compile_job_id
+    if job then vim.fn.chanclose(job, "stdin") end
+  end, { buffer = true, silent = true, desc = "Send EOF to running program" })
 end
 
 function M.setup()
   vim.g.compile_mode = {
     recompile_no_fail = true,
+    use_pseudo_terminal = true,
+    baleia_setup = true, -- decode ANSI color codes (clang/cargo) instead of showing raw [0m junk
     environment = { MANPAGER = "col -b", PAGER = "col -b" },
   }
   load_history()

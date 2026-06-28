@@ -16,7 +16,7 @@ return {
 
   {
     "nvim-lualine/lualine.nvim",
-    lazy = false,
+    event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
@@ -35,7 +35,7 @@ return {
 
   {
     "williamboman/mason.nvim",
-    lazy = false,
+    cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall" },
     opts = {
       ensure_installed = {
         "typescript-language-server",
@@ -130,6 +130,7 @@ return {
       { "<leader>fb", "<cmd>Telescope buffers<cr>" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>" },
       { "<leader>fo", "<cmd>Telescope oldfiles<cr>" },
+      { "<leader>dt", "<cmd>Telescope diagnostics<cr>" },
     },
   },
 
@@ -155,7 +156,7 @@ return {
 
   {
     "ej-shafran/compile-mode.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim", "m00qek/baleia.nvim" },
     cmd = { "Compile", "Recompile" },
     keys = {
       { "<leader>cc", function() require("configs.compile-mode").compile() end },
