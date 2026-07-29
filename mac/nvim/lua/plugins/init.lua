@@ -192,6 +192,19 @@ return {
   },
 
   {
+    "shortcuts/no-neck-pain.nvim",
+    version = "*",
+    cmd = "NoNeckPain",
+    keys = {
+      { "<leader>t", "<cmd>NoNeckPain<cr>" },
+    },
+    opts = {
+      width = 90,
+      minSideBufferWidth = 5,
+    },
+  },
+
+  {
     "tpope/vim-fugitive",
     cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse" },
     keys = {
