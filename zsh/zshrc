@@ -1,7 +1,6 @@
-export PATH="$HOME/.local/share/agave/install/active_release/bin:$HOME/.local/bin:/opt/homebrew/opt/llvm@14/bin:$PATH"
-export SBF_TOOLS_PATH="$HOME/.cache/solana/v1.37/platform-tools"
-export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
-export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
+export DOTFILES="${DOTFILES:-${${(%):-%x}:A:h:h}}"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
@@ -12,24 +11,54 @@ plugins=(
   zsh-syntax-highlighting
   rust
   dotenv
-  macos
 )
+
+case "$(uname -s)" in
+  Darwin) ZSH_PLATFORM="$DOTFILES/zsh/darwin.zsh" ;;
+  Linux)  ZSH_PLATFORM="$DOTFILES/zsh/linux.zsh" ;;
+esac
+
+[ -f "$ZSH_PLATFORM" ] && source "$ZSH_PLATFORM"
 
 source $ZSH/oh-my-zsh.sh
 
 eval "$(starship init zsh)"
-
 eval "$(zoxide init zsh)"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
 alias c="clear"
 alias ll="ls -lah"
+
+alias g='git'
+alias gcl='git clone --depth 1'
+alias gi='git init'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+
+alias ni='npm install'
+alias nrd='npm run dev'
+alias nrb='npm run build'
+alias nrs='npm run start'
+alias pi='pnpm install'
+alias prd='pnpm run dev'
+alias prb='pnpm run build'
+alias prs='pnpm run start'
+
+alias ab='anchor build'
+alias at='anchor test'
+
+alias tk='tmux kill-server'
+alias todo="$HOME/.todo.sh"
+
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+
+bindkey -v
+bindkey '^ ' autosuggest-accept
+
+zstyle ':completion:*' correct-prompt 'correct to: %d (y/n/e/a)? '
 
 vf() {
   local file
@@ -38,16 +67,38 @@ vf() {
   [ -n "$file" ] && nvim "$file"
 }
 
-export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+cdf() {
+  local ROOT="${1:-$HOME/Dev}"
 
-bindkey -v
+  local dir
+  dir=$(find "$ROOT" -type d -not -path "*/node_modules/*" 2>/dev/null | \
+    fzf --height=40% --layout=reverse --border --prompt="Select folder> " \
+    --preview="tree -C {} | head -20")
 
-bindkey '^ ' autosuggest-accept
-bindkey '^[→' autosuggest-accept-word
+  if [[ -n $dir ]]; then
+    cd "$dir"
+  fi
+}
 
-zstyle ':completion:*' correct-prompt 'correct to: %d (y/n/e/a)? '
+td() {
+  SESSION="dev"
 
-export PATH="/Users/avhidotsol/.antigravity/antigravity/bin:$PATH"
+  if tmux has-session -t "$SESSION" 2>/dev/null; then
+    tmux attach-session -t "$SESSION"
+    return
+  fi
+
+  tmux new-session -d -s "$SESSION" -n dev
+
+  tmux new-window -t "$SESSION:2" -n build-or-server
+  tmux new-window -t "$SESSION:3" -n git
+  tmux new-window -t "$SESSION:4" -n validator
+  tmux new-window -t "$SESSION:5" -n temp
+
+  tmux select-window -t "$SESSION:1"
+
+  tmux attach-session -t "$SESSION"
+}
 
 change-manager() {
   set -e
@@ -118,27 +169,10 @@ change-manager() {
   echo "Package manager switched"
 }
 
-alias todo="$HOME/.todo.sh"
-
-echo ""
-echo "TODOs"
-echo ""
-$HOME/.todo.sh display
-echo ""
-
-tmux-dev() {
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [[ $- == *i* ]]; then
-  SESSION_NAME="personal"
-  PERSONAL_DIR="$HOME/Dev/personal"
-
-  if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-    tmux new-session -d -s "$SESSION_NAME" -c "$PERSONAL_DIR"
-    tmux new-window -t "$SESSION_NAME" -c "$PERSONAL_DIR"
-    tmux new-window -t "$SESSION_NAME" -c "$PERSONAL_DIR"
-    tmux new-window -t "$SESSION_NAME" -c "$PERSONAL_DIR"
-    tmux select-window -t "$SESSION_NAME:0"
-  fi
-
-  tmux attach-session -t "$SESSION_NAME"
+if [ -x "$HOME/.todo.sh" ]; then
+  echo ""
+  echo "TODOs"
+  echo ""
+  "$HOME/.todo.sh" display
+  echo ""
 fi
-}
