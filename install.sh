@@ -31,7 +31,12 @@ link() {
 }
 
 link nvim "$HOME/.config/nvim"
-link tmux/tmux.conf "$HOME/.tmux.conf"
+if [ -L "$HOME/.tmux.conf" ]; then
+  rm "$HOME/.tmux.conf"
+  echo "rm    $HOME/.tmux.conf (legacy, shadows ~/.config/tmux)"
+fi
+
+link tmux "$HOME/.config/tmux"
 link zsh/zshrc "$HOME/.zshrc"
 link zsh/todo.sh "$HOME/.todo.sh"
 
