@@ -24,6 +24,23 @@ return {
         component_separators = "|",
         section_separators = "",
       },
+      sections = {
+        lualine_x = {
+          {
+            function() return "󰚩 Copilot" end,
+            color = function()
+              local ok, client = pcall(function() return require("copilot.client").get() end)
+              if ok and client then
+                return { fg = "#fabd2f" }
+              end
+              return { fg = "#665c54" }
+            end,
+          },
+          "encoding",
+          "fileformat",
+          "filetype",
+        },
+      },
     },
   },
 
@@ -112,13 +129,36 @@ return {
     cmd = "Telescope",
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>" },
+      {
+        "<leader>fF",
+        function()
+          require("configs.telescope-dir").pick_dir()
+        end,
+      },
+      {
+        "<leader>fA",
+        function()
+          require("configs.telescope-dir").find_files_anywhere()
+        end,
+      },
       { "<leader>fw", "<cmd>Telescope live_grep<cr>" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>" },
       { "<leader>fo", "<cmd>Telescope oldfiles<cr>" },
       { "<leader>dt", "<cmd>Telescope diagnostics<cr>" },
+      { "<leader>fy", "<cmd>Telescope neoclip<cr>" },
     },
+  },
+
+  {
+    "AckslD/nvim-neoclip.lua",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    event = "VeryLazy",
+    config = function()
+      require("neoclip").setup()
+      require("telescope").load_extension "neoclip"
+    end,
   },
 
   {
@@ -189,6 +229,33 @@ return {
     keys = {
       { "<leader>gg", "<cmd>LazyGit<cr>" },
     },
+  },
+
+  {
+    "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
+    config = function()
+      require "configs.copilot"
+    end,
+  },
+
+  {
+    "gelguy/wilder.nvim",
+    event = "CmdlineEnter",
+    dependencies = { "romgrk/fzy-lua-native" },
+    config = function()
+      local wilder = require "wilder"
+      wilder.setup { modes = { ":", "/", "?" } }
+      wilder.set_option("pipeline", {
+        wilder.branch(
+          wilder.cmdline_pipeline { fuzzy = 1 },
+          wilder.search_pipeline()
+        ),
+      })
+      wilder.set_option("renderer", wilder.wildmenu_renderer {
+        highlighter = wilder.basic_highlighter(),
+      })
+    end,
   },
 
   {

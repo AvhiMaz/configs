@@ -96,14 +96,14 @@ local cmp_config = {
 cmp.setup(cmp_config)
 
 cmp.setup.cmdline(":", {
+  enabled = function()
+    return vim.fn.getcmdtype() == ":" and vim.fn.getcmdline():match "^!" ~= nil
+  end,
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = "path" },
-  }, {
-    { name = "cmdline" },
+  sources = cmp.config.sources {
     { name = "cmdline_history" },
     { name = "zsh_history" },
-  }),
+  },
 })
 
 return cmp_config
