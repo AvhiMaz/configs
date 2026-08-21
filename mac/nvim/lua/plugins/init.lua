@@ -246,9 +246,13 @@ return {
     config = function()
       local wilder = require "wilder"
       wilder.setup { modes = { ":", "/", "?" } }
+      wilder.set_option("use_python_remote_plugin", 0)
       wilder.set_option("pipeline", {
         wilder.branch(
-          wilder.cmdline_pipeline { fuzzy = 1 },
+          wilder.cmdline_pipeline {
+            fuzzy = 1,
+            fuzzy_filter = wilder.lua_fzy_filter(),
+          },
           wilder.search_pipeline()
         ),
       })
