@@ -1,3 +1,7 @@
+export LANG=en_IN.UTF-8
+
+[[ -o interactive ]] && stty -ixon 2>/dev/null
+
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 
 export BUN_INSTALL="$HOME/.bun"
