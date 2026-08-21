@@ -50,6 +50,8 @@
 shell-integration = none
 title = " "
 
+macos-option-as-alt = true
+
 macos-titlebar-proxy-icon = hidden
 
 theme = Gruvbox Dark
