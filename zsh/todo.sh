@@ -94,7 +94,7 @@ case "$1" in
   display)
     if [ ! -s "$TODO_FILE" ]; then
       echo "        No pending tasks"
-      return
+      exit 0
     fi
 
     grep -n -v "\[x\]" "$TODO_FILE" | while IFS=: read num line; do
