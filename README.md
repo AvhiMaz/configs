@@ -58,6 +58,12 @@ sourced last so they win. Config lives in `~/.config/tmux/`, not `~/.tmux.conf`.
 Different prefixes so nesting works: the key tells you which tmux you are
 talking to. `C-s` needs flow control off, which `zsh/linux.zsh` handles.
 
+Over ssh, nvim switches to OSC 52 so a yank on the remote lands in the local
+clipboard. tmux needs `set-clipboard on` for that to pass through, otherwise it
+swallows the sequence. The reverse direction does not exist: terminals refuse to
+serve clipboard reads to remote programs, so paste from the local machine is
+`Cmd-V`, not `p`.
+
 Everything else is identical on both.
 
 ## Requirements

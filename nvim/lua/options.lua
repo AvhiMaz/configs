@@ -40,8 +40,12 @@ if os.getenv "SSH_CONNECTION" then
       ["*"] = require("vim.ui.clipboard.osc52").copy "*",
     },
     paste = {
-      ["+"] = require("vim.ui.clipboard.osc52").paste "+",
-      ["*"] = require("vim.ui.clipboard.osc52").paste "*",
+      ["+"] = function()
+        return vim.split(vim.fn.getreg "", "\n")
+      end,
+      ["*"] = function()
+        return vim.split(vim.fn.getreg "", "\n")
+      end,
     },
   }
 end
