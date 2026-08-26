@@ -31,6 +31,7 @@ o.undofile = true
 o.autoread = true
 
 o.clipboard = "unnamedplus"
+o.guicursor = "a:block"
 
 if os.getenv "SSH_CONNECTION" then
   vim.g.clipboard = {
