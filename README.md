@@ -11,6 +11,7 @@ and the change is in effect immediately, no copying or rebuild step.
 
 ```
 nvim/          neovim, lazy.nvim, single shared config
+nvim-portable/ one-file neovim for boxes you ssh into
 tmux/          tmux.conf + linux.conf overrides
 zsh/           zshrc + darwin.zsh / linux.zsh + todo.sh
 ghostty/       terminal config
@@ -65,6 +66,39 @@ serve clipboard reads to remote programs, so paste from the local machine is
 `Cmd-V`, not `p`.
 
 Everything else is identical on both.
+
+## Remote machines
+
+The config above assumes it is your machine: you clone the repo, run
+`install.sh`, and let 34 plugins install. On a box you ssh into once, that is
+the wrong trade. `nvim-portable/init.lua` is the same editor in a single file
+with no repo, no symlinks, and no install step.
+
+```sh
+mkdir -p ~/.config/nvim
+wget -O ~/.config/nvim/init.lua \
+  https://raw.githubusercontent.com/AvhiMaz/dotfiles/master/nvim-portable/init.lua
+nvim
+```
+
+First launch bootstraps lazy.nvim and clones the plugins, about thirty seconds.
+After that it starts in ~17 ms and occupies 46 MB, against 34 plugins and 1.3 GB
+for the full config.
+
+Options, autocmds, and mappings are the same file contents as `nvim/`, so muscle
+memory transfers, OSC 52 included. What it keeps: gruvbox, lualine, telescope,
+oil, harpoon, gitsigns, nvim-cmp, and lspconfig with the usual `gd` `gr` `K`
+`<leader>ca` `<leader>rn`. What it drops: copilot, mason, octo, compile-mode,
+wilder, neoclip, lazygit, fugitive, rustaceanvim, treesitter.
+
+Language servers are enabled only when the binary already exists on that
+machine, so a bare server gives you a working editor with no errors, and one
+that happens to have `gopls` or `clangd` picks them up without being told.
+Needs neovim 0.11+; older versions skip the LSP block with a warning rather
+than failing to start.
+
+To try it without disturbing an existing setup, put it at
+`~/.config/nvimtest/init.lua` and run `NVIM_APPNAME=nvimtest nvim`.
 
 ## Requirements
 
