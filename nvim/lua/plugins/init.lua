@@ -62,6 +62,13 @@ return {
   {
     "williamboman/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall" },
+    opts = {},
+  },
+
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    event = "VeryLazy",
+    dependencies = { "mason.nvim" },
     opts = {
       ensure_installed = {
         "typescript-language-server",
@@ -168,6 +175,14 @@ return {
       { "<leader>fo", "<cmd>Telescope oldfiles<cr>" },
       { "<leader>dt", "<cmd>Telescope diagnostics<cr>" },
       { "<leader>fy", "<cmd>Telescope neoclip<cr>" },
+    },
+  },
+
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
+    keys = {
+      { "<leader>u", "<cmd>UndotreeToggle<cr>" },
     },
   },
 
